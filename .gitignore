@@ -1,69 +1,118 @@
-# Prerequisites
-*.d
 
-# Compiled Object files
+Copy
+
+# ─── C / C++ ─────────────────────────────────────────────────────────────────
+*.d
 *.slo
 *.lo
 *.o
 *.obj
-
-# Precompiled Headers
 *.gch
 *.pch
-
-# Linker files
 *.ilk
-
-# Debugger Files
 *.pdb
-
-# Compiled Dynamic libraries
 *.so
+*.so.*
 *.dylib
 *.dll
-*.so.*
-
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
 *.lai
 *.la
 *.a
 *.lib
-
-# Executables
 *.exe
 *.out
 *.app
-
-# Build directories
-build/
-Build/
-build-*/
-
-# CMake generated files
+*.dwo
+ 
+# ─── CMake ───────────────────────────────────────────────────────────────────
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
-Makefile
-install_manifest.txt
 compile_commands.json
-
-# Temporary files
+install_manifest.txt
+Makefile
+build/
+Build/
+build-*/
+*/build/
+*/Build/
+*/build-*/
+cmake-build-*/
+Testing/
+.cache/
+ 
+# ─── Temporary ───────────────────────────────────────────────────────────────
 *.tmp
 *.log
 *.bak
 *.swp
-
-# vcpkg
+ 
+# ─── vcpkg ───────────────────────────────────────────────────────────────────
 vcpkg_installed/
-
-# debug information files
-*.dwo
-
-# test output & cache
-Testing/
-.cache/
+ 
+# ─── STM32 build artifacts ───────────────────────────────────────────────────
+*.elf
+*.bin
+*.hex
+*.map
+*.lst
+*.axf
+*.su
+*.cyclo
+ 
+# ─── STM32CubeIDE ────────────────────────────────────────────────────────────
+.cproject
+.project
+.settings/
+Debug/
+Release/
+*.launch
+ 
+# ─── STM32CubeMX ─────────────────────────────────────────────────────────────
+# *.ioc НЕ ігноруємо — комітити обов'язково (документує конфігурацію пінів)
+*.mxproject
+ 
+# ─── CLion / JetBrains ───────────────────────────────────────────────────────
+.idea/
+cmake-build-*/
+ 
+# ─── VS Code ─────────────────────────────────────────────────────────────────
+.vscode/
+# Розкоментуй якщо хочеш зберігати налаштування дебагера:
+# !.vscode/launch.json
+# !.vscode/c_cpp_properties.json
+# !.vscode/tasks.json
+ 
+# ─── Keil MDK ────────────────────────────────────────────────────────────────
+*.uvoptx
+*.uvguix
+*.scvd
+Objects/
+Listings/
+ 
+# ─── IAR ─────────────────────────────────────────────────────────────────────
+*.ewt
+*.ewd
+*.dni
+settings/
+ 
+# ─── OS ──────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+ 
+# ─── Generated HAL/CMSIS ─────────────────────────────────────────────────────
+# Варіант А — не комітити (якщо є *.ioc, CubeMX відновить):
+# Drivers/
+# Middlewares/
+# F756ZG/Drivers/
+# L432KC/Drivers/
+# F756ZG/Middlewares/
+# L432KC/Middlewares/
+#
+# Варіант Б (поточний) — комітити, щоб репо клонувалось і збиралось одразу
+ 
+# ─── Sensitive / local ───────────────────────────────────────────────────────
+secrets.h
+local_config.h
+*.local
