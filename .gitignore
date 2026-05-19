@@ -116,3 +116,4 @@ desktop.ini
 secrets.h
 local_config.h
 *.local
+/.metadata/
