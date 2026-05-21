@@ -4,7 +4,7 @@
 
 constexpr uint16_t CONTROL_LOOP_HZ = 500u;
 constexpr uint16_t CONTROL_TELEMETRY_HZ = 50u;
-constexpr float CONTROL_PERIOD_S =  1.0f / CONTROL_LOOP_HZ;
+constexpr float CONTROL_PERIOD_S =  1.0f / static_cast<float>(CONTROL_LOOP_HZ);
 constexpr uint16_t CONTROL_PERIOD_MS = 1000u / CONTROL_LOOP_HZ;
 
 constexpr float IMU_COMPLEMENTARY_ALPHA = 0.996f;
@@ -26,6 +26,8 @@ constexpr uint8_t MOTOR_ENCODER_PPR = 11;
 constexpr float MOTOR_WHEEL_DIAMETER_MM = 67.3f;
 constexpr float MOTOR_WHEEL_BASE_MM = 200.0f;
 
-constexpr uint16_t PWM_FREQ_HZ = 20000u;
+constexpr uint32_t PWM_FREQ_HZ = 20000u;
 constexpr uint32_t PWM_TIM_TICK_HZ = 216000000u;
+constexpr uint32_t PWM_PRESCALER = 0;
+constexpr uint32_t PWM_ARR = PWM_TIM_TICK_HZ / (PWM_FREQ_HZ * (PWM_PRESCALER + 1)) - 1;
 
