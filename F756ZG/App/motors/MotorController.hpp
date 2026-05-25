@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstdint>
 #include "stm32f7xx_hal.h"
 #include "robot_config.hpp"
 
