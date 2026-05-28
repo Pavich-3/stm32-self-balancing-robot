@@ -50,12 +50,17 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 )
 
 file(GLOB_RECURSE APP_SOURCES "App/*.cpp")
-target_sources(${CMAKE_PROJECT_NAME} PRIVATE ${APP_SOURCES})
+target_sources(${CMAKE_PROJECT_NAME} PRIVATE 
+    ${APP_SOURCES}
+    App/imu/BMI270_SensorAPI/bmi2.c
+    App/imu/BMI270_SensorAPI/bmi270.c
+)
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     App
     ../shared
+    App/imu/BMI270_SensorAPI
 )
 
 # Add project symbols (macros)
