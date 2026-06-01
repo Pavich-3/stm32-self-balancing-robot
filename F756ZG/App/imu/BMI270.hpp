@@ -5,8 +5,8 @@
 #include "BMI270_SensorAPI/bmi270.h"
 #include "robot_config.hpp"
 
-static constexpr uint16_t bmi270_i2c_addr = (BMI2_I2C_PRIM_ADDR << 1);
-//static constexpr uint16_t bmi270_i2c_addr = (BMI2_I2C_SEC_ADDR << 1);
+//static constexpr uint16_t bmi270_i2c_addr = (BMI2_I2C_PRIM_ADDR << 1);
+static constexpr uint16_t bmi270_i2c_addr = (BMI2_I2C_SEC_ADDR << 1);
 
 class BMI270 {
 private:

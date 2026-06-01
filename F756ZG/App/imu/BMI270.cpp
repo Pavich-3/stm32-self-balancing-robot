@@ -43,8 +43,14 @@ int8_t BMI270::init() {
 	uint8_t sensor_list[2] = { BMI2_ACCEL, BMI2_GYRO };
 
 	rslt = bmi270_init(&dev_);
+	dev_.resolution = 16;
+
+	rslt = set_accel_gyro_config();
 
 	rslt = bmi2_sensor_enable(sensor_list, 2, &dev_);
+
+	printf("resolution: %d\n", (int)dev_.resolution);
+	printf("chip_id: 0x%02X\n", dev_.chip_id);
 
 	return rslt;
 }
@@ -52,6 +58,10 @@ int8_t BMI270::init() {
 void BMI270::update() {
 	uint8_t rslt = bmi2_get_sensor_data(&sensor_data_, &dev_);
 	if (rslt != BMI2_OK) return;
+
+	printf("raw acc: %d %d %d\n", sensor_data_.acc.x, sensor_data_.acc.y, sensor_data_.acc.z);
+	printf("raw gyr: %d %d %d\n", sensor_data_.gyr.x, sensor_data_.gyr.y, sensor_data_.gyr.z);
+	printf("status: 0x%02X\n", sensor_data_.status);
 
 	if ((sensor_data_.status & BMI2_DRDY_ACC) && (sensor_data_.status & BMI2_DRDY_GYR)) {
 		/* Converting lsb to meter per second squared for 16 bit accelerometer at 2G range. */
@@ -64,6 +74,16 @@ void BMI270::update() {
 		gyr_y_ = lsb_to_dps(sensor_data_.gyr.y, (float)2000, dev_.resolution);
 		gyr_z_ = lsb_to_dps(sensor_data_.gyr.z, (float)2000, dev_.resolution);
 	}
+
+//	/* Converting lsb to meter per second squared for 16 bit accelerometer at 2G range. */
+//	acc_x_ = lsb_to_mps2(sensor_data_.acc.x, (float)2, dev_.resolution);
+//	acc_y_ = lsb_to_mps2(sensor_data_.acc.y, (float)2, dev_.resolution);
+//	acc_z_ = lsb_to_mps2(sensor_data_.acc.z, (float)2, dev_.resolution);
+//
+//	/* Converting lsb to degree per second for 16 bit gyro at 2000dps range. */
+//	gyr_x_ = lsb_to_dps(sensor_data_.gyr.x, (float)2000, dev_.resolution);
+//	gyr_y_ = lsb_to_dps(sensor_data_.gyr.y, (float)2000, dev_.resolution);
+//	gyr_z_ = lsb_to_dps(sensor_data_.gyr.z, (float)2000, dev_.resolution);
 }
 
 int8_t BMI270::set_accel_gyro_config() {
