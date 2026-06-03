@@ -1,9 +1,10 @@
 #include "MPU-6050.hpp"
-#include "stm32f7xx_hal.h"
 
 static constexpr uint16_t mpu6050Address = (0b1101000 << 1);
 //static constexpr uint16_t mpu6050Address = (b1101001 << 1);
 static constexpr uint8_t MPU6050_WHO_I_AM = 0x68;
+
+static constexpr float GRAVITY_MS2 = 9.80665;
 
 MPU6050::MPU6050(I2C_HandleTypeDef* hi2c) : hi2c_(hi2c) {}
 

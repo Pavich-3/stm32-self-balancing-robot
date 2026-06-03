@@ -28,6 +28,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "stdio.h"
 #include "stdint.h"
 #include "../../App/app.hpp"
 /* USER CODE END Includes */
@@ -39,7 +40,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+void i2cScaner();
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -50,7 +51,15 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+extern UART_HandleTypeDef huart3;
+extern I2C_HandleTypeDef hi2c1;
 
+float accX = 0;
+float accY = 0;
+float accZ = 0;
+float gyrX = 0;
+float gyrY = 0;
+float gyrZ = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -97,22 +106,36 @@ int main(void)
 	MX_ETH_Init();
 	MX_I2C1_Init();
 	MX_USART3_UART_Init();
+	if (HAL_I2C_GetState(&hi2c1) == HAL_I2C_STATE_READY) {
+	    printf("I2C ready\n");
+	} else {
+	    printf("I2C NOT ready\n");
+	}
 	MX_USB_OTG_FS_PCD_Init();
 	MX_SPI1_Init();
 	/* USER CODE BEGIN 2 */
 	uint8_t reslt = appInit();
+	if (!reslt) {
+		printf("init was successful");
+	} else {
+		printf("init wasn't successful");
+	}
+	i2cScaner();
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 	while (1)
 	{
+		appRun(&accX, &accY, &accZ, &gyrX, &gyrY, &gyrZ);
 		if (reslt) {
 			HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_0);
 		} else {
 			HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_3);
 		}
-		HAL_Delay(500);
+		printf("Acc x - %f, y - %f, z - %f\n", accX, accY, accZ);
+		printf("Gyr x - %f, y - %f, z - %f\n", gyrX, gyrY, gyrZ);
+		HAL_Delay(1000);
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
@@ -170,7 +193,22 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void i2cScaner() {
+    uint8_t chip_id = 0;
+    for (uint8_t i = 1; i < 128; ++i) {
+        if (HAL_I2C_Mem_Read(&hi2c1, (i << 1), 0x00, I2C_MEMADD_SIZE_8BIT, &chip_id, 1, 1000) == HAL_OK) {
+            printf("address found: 0x%02X, chip_id: 0x%02X\n", i, chip_id);
+        } else {
+        	printf("skip\n");
+        }
+    }
+}
 
+int __io_putchar(int ch) {
+	HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 0xFFFF);
+
+	return ch;
+}
 /* USER CODE END 4 */
 
 /**

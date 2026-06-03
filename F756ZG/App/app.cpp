@@ -1,30 +1,27 @@
 #include "app.hpp"
 #include "stm32f7xx_hal.h"
-#include "imu/BMI270.hpp"
 #include "imu/MPU-6050.hpp"
 
 extern I2C_HandleTypeDef hi2c1;
 
-static BMI270 bmi270{&hi2c1, nullptr};
+static MPU6050 mpu6050{&hi2c1};
 
 uint8_t appInit() {
-	uint8_t reslt = bmi270.init();
-	printf("rslt: %d\n", (int)reslt);
-
-	if (reslt == BMI2_OK) {
-		return 1;
-	} else {
+	MPU6050CALLBACK result = mpu6050.init();
+	if (result == MPU6050CALLBACK::MPU6050_OK) {
 		return 0;
+	} else {
+		return 1;
 	}
 }
 
 void appRun(float* accX, float* accY, float* accZ, float* gyrX, float* gyrY, float* gyrZ) {
-	bmi270.update();
-	*accX = bmi270.getAccX();
-	*accY = bmi270.getAccY();
-	*accZ = bmi270.getAccZ();
+	mpu6050.update();
+	*accX = mpu6050.getAccX();
+	*accY = mpu6050.getAccY();
+	*accZ = mpu6050.getAccZ();
 
-	*gyrX = bmi270.getGyrX();
-	*gyrY = bmi270.getGyrY();
-	*gyrZ = bmi270.getGyrZ();
+	*gyrX = mpu6050.getGyrX();
+	*gyrY = mpu6050.getGyrY();
+	*gyrZ = mpu6050.getGyrZ();
 }
