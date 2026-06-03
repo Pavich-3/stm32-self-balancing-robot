@@ -1,6 +1,7 @@
 #include "app.hpp"
 #include "stm32f7xx_hal.h"
 #include "imu/BMI270.hpp"
+#include "imu/MPU-6050.hpp"
 
 extern I2C_HandleTypeDef hi2c1;
 
