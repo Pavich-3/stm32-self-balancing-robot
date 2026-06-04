@@ -107,21 +107,21 @@ int main(void)
 	MX_ETH_Init();
 	MX_I2C1_Init();
 	MX_USART3_UART_Init();
-	if (HAL_I2C_GetState(&hi2c1) == HAL_I2C_STATE_READY) {
-	    printf("I2C ready\n");
-	} else {
-	    printf("I2C NOT ready\n");
-	}
+//	if (HAL_I2C_GetState(&hi2c1) == HAL_I2C_STATE_READY) {
+//	    printf("I2C ready\n");
+//	} else {
+//	    printf("I2C NOT ready\n");
+//	}
 	MX_USB_OTG_FS_PCD_Init();
 	MX_SPI1_Init();
 	/* USER CODE BEGIN 2 */
 	uint8_t reslt = appInit();
-	if (!reslt) {
-		printf("init was successful");
-	} else {
-		printf("init wasn't successful");
-	}
-	i2cScaner();
+//	if (!reslt) {
+//		printf("init was successful");
+//	} else {
+//		printf("init wasn't successful");
+//	}
+//	i2cScaner();
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -134,9 +134,10 @@ int main(void)
 		} else {
 			HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_3);
 		}
-		printf("Acc x - %f, y - %f, z - %f\n", accX, accY, accZ);
-		printf("Gyr x - %f, y - %f, z - %f\n", gyrX, gyrY, gyrZ);
-		printf("Angle on X - %f\n", angle);
+//		printf("Acc x - %f, y - %f, z - %f\n", accX, accY, accZ);
+//		printf("Gyr x - %f, y - %f, z - %f\n", gyrX, gyrY, gyrZ);
+//		printf("Angle on X - %f\n", angle);
+		printf("%f,%f\n", angle, gyrX);
 //		HAL_Delay(1000);
 		/* USER CODE END WHILE */
 
