@@ -137,8 +137,12 @@ private:
 
 	uint8_t rawData_[len] = {0};
 
+	int32_t accOffsetX_{0}, accOffsetY_{0}, accOffsetZ_{0};
+	int32_t gyrOffsetX_{0}, gyrOffsetY_{0}, gyrOffsetZ_{0};
 	float acc_x_{0}, acc_y_{0}, acc_z_{0};
 	float gyr_x_{0}, gyr_y_{0}, gyr_z_{0};
+
+	void readRawData();
 
 	MPU6050CALLBACK i2cWrite(uint16_t reg, uint8_t * data, uint16_t len);
 	MPU6050CALLBACK i2cRead(uint16_t reg, uint8_t *data, uint16_t len);
@@ -148,6 +152,7 @@ public:
 
 	MPU6050CALLBACK init();
 	void update();
+	void calibrate(std::size_t samples);
 
 	float getAccX() const { return acc_x_; }
 	float getAccY() const { return acc_y_; }

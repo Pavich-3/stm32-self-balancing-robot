@@ -76,12 +76,12 @@ void MPU6050::update() {
 		return;
 	}
 
-	int16_t acc_x = ((rawData_[0] << 8) | rawData_[1]);
-	int16_t acc_y = ((rawData_[2] << 8) | rawData_[3]);
-	int16_t acc_z = ((rawData_[4] << 8) | rawData_[5]);
-	int16_t gyr_x = ((rawData_[8] << 8) | rawData_[9]);
-	int16_t gyr_y = ((rawData_[10] << 8) | rawData_[11]);
-	int16_t gyr_z = ((rawData_[12] << 8) | rawData_[13]);
+	int32_t acc_x = static_cast<int32_t>(static_cast<int16_t>((rawData_[0] << 8) | rawData_[1])) - accOffsetX_;
+	int32_t acc_y = static_cast<int32_t>(static_cast<int16_t>((rawData_[2] << 8) | rawData_[3])) - accOffsetY_;
+	int32_t acc_z = static_cast<int32_t>(static_cast<int16_t>((rawData_[4] << 8) | rawData_[5])) - accOffsetZ_;
+	int32_t gyr_x = static_cast<int32_t>(static_cast<int16_t>((rawData_[8] << 8) | rawData_[9])) - gyrOffsetX_;
+	int32_t gyr_y = static_cast<int32_t>(static_cast<int16_t>((rawData_[10] << 8) | rawData_[11])) - gyrOffsetY_;
+	int32_t gyr_z = static_cast<int32_t>(static_cast<int16_t>((rawData_[12] << 8) | rawData_[13])) - gyrOffsetZ_;
 
 	acc_x_ = acc_x / ACC_SCALE_FACTOR * GRAVITY_MS2;
 	acc_y_ = acc_y / ACC_SCALE_FACTOR * GRAVITY_MS2;
@@ -91,5 +91,29 @@ void MPU6050::update() {
 	gyr_y_ = gyr_y / GYR_SCALE_FACTOR;
 	gyr_z_ = gyr_z / GYR_SCALE_FACTOR;
 
+}
+
+void MPU6050::calibrate(std::size_t samples) {
+	int32_t ax_sum = 0, ay_sum = 0, az_sum = 0, gx_sum = 0, gy_sum = 0, gz_sum = 0;
+	for (std::size_t i = 0; i < samples; ++ i) {
+		MPU6050CALLBACK status = i2cRead(MPU6050REG::MPU6050_ACCEL_XOUT_H_ADDR, rawData_, static_cast<uint16_t>(len));
+		if (status == MPU6050CALLBACK::MPU6050_I2C_ERROR) {
+			return;
+		}
+
+		ax_sum += static_cast<int32_t>(static_cast<int16_t>((rawData_[0] << 8) | rawData_[1]));
+		ay_sum += static_cast<int32_t>(static_cast<int16_t>((rawData_[2] << 8) | rawData_[3]));
+		az_sum += static_cast<int32_t>(static_cast<int16_t>((rawData_[4] << 8) | rawData_[5]));
+		gx_sum += static_cast<int32_t>(static_cast<int16_t>((rawData_[8] << 8) | rawData_[9]));
+		gy_sum += static_cast<int32_t>(static_cast<int16_t>((rawData_[10] << 8) | rawData_[11]));
+		gz_sum += static_cast<int32_t>(static_cast<int16_t>((rawData_[12] << 8) | rawData_[13]));
+	}
+
+	accOffsetX_ = ax_sum / static_cast<int32_t>(samples);
+	accOffsetY_ = ay_sum / static_cast<int32_t>(samples);
+	accOffsetZ_ = az_sum / static_cast<int32_t>(samples);
+	gyrOffsetX_ = gx_sum / static_cast<int32_t>(samples);
+	gyrOffsetY_ = gy_sum / static_cast<int32_t>(samples);
+	gyrOffsetZ_ = gz_sum / static_cast<int32_t>(samples);
 }
 

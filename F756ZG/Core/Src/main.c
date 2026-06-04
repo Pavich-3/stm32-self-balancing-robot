@@ -54,12 +54,13 @@ void i2cScaner();
 extern UART_HandleTypeDef huart3;
 extern I2C_HandleTypeDef hi2c1;
 
-float accX = 0;
-float accY = 0;
-float accZ = 0;
-float gyrX = 0;
-float gyrY = 0;
-float gyrZ = 0;
+float accX = 0.0f;
+float accY = 0.0f;
+float accZ = 0.0f;
+float gyrX = 0.0f;
+float gyrY = 0.0f;
+float gyrZ = 0.0f;
+float angle = 0.0f;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -127,7 +128,7 @@ int main(void)
 	/* USER CODE BEGIN WHILE */
 	while (1)
 	{
-		appRun(&accX, &accY, &accZ, &gyrX, &gyrY, &gyrZ);
+		appRun(&accX, &accY, &accZ, &gyrX, &gyrY, &gyrZ, &angle);
 		if (reslt) {
 			HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_0);
 		} else {
@@ -135,7 +136,8 @@ int main(void)
 		}
 		printf("Acc x - %f, y - %f, z - %f\n", accX, accY, accZ);
 		printf("Gyr x - %f, y - %f, z - %f\n", gyrX, gyrY, gyrZ);
-		HAL_Delay(1000);
+		printf("Angle on X - %f\n", angle);
+//		HAL_Delay(1000);
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
