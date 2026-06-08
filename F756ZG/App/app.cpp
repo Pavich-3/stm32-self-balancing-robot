@@ -2,11 +2,13 @@
 #include "stm32f7xx_hal.h"
 #include "imu/MPU-6050.hpp"
 #include "filters/ComplementaryFilter.hpp"
+#include "filters/KalmanFilter.hpp"
 
 extern I2C_HandleTypeDef hi2c1;
 
 static MPU6050 mpu6050{&hi2c1};
-static ComplementaryFilter filter;
+static ComplementaryFilter complementaryFilter;
+static KalmanFilter kalmanFilter;
 
 uint8_t appInit() {
 	MPU6050CALLBACK result = mpu6050.init();
@@ -28,5 +30,5 @@ void appRun(float* accX, float* accY, float* accZ, float* gyrX, float* gyrY, flo
 	*gyrY = mpu6050.getGyrY();
 	*gyrZ = mpu6050.getGyrZ();
 
-	*angle = filter.update(*gyrX, *accX, *accY, *accZ);
+	*angle = complementaryFilter.update(*gyrX, *accX, *accY, *accZ);
 }
