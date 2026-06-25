@@ -6,7 +6,7 @@ extern "C" {
 #endif
 
 uint8_t appInit(void);
-void appRun(float* accX, float* accY, float* accZ, float* gyrX, float* gyrY, float* gyrZ, float* angle);
+void appRun(float* accX, float* accY, float* accZ, float* gyrX, float* gyrY, float* gyrZ, float* angle, float* output);
 
 #ifdef __cplusplus
 }

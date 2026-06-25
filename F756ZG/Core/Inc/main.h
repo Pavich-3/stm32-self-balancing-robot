@@ -57,6 +57,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define PWM_MOTOR1_Pin GPIO_PIN_5
+#define PWM_MOTOR1_GPIO_Port GPIOE
+#define PWM_MOTOR2_Pin GPIO_PIN_6
+#define PWM_MOTOR2_GPIO_Port GPIOE
 #define USER_Btn_Pin GPIO_PIN_13
 #define USER_Btn_GPIO_Port GPIOC
 #define MCO_Pin GPIO_PIN_0
@@ -75,6 +79,14 @@ void Error_Handler(void);
 #define RMII_RXD1_GPIO_Port GPIOC
 #define LD1_Pin GPIO_PIN_0
 #define LD1_GPIO_Port GPIOB
+#define MOTOR1_IN1_Pin GPIO_PIN_9
+#define MOTOR1_IN1_GPIO_Port GPIOE
+#define MOTOR1_IN2_Pin GPIO_PIN_11
+#define MOTOR1_IN2_GPIO_Port GPIOE
+#define MOTOR2_IN1_Pin GPIO_PIN_13
+#define MOTOR2_IN1_GPIO_Port GPIOE
+#define MOTOR2_IN2_Pin GPIO_PIN_14
+#define MOTOR2_IN2_GPIO_Port GPIOE
 #define RMII_TXD1_Pin GPIO_PIN_13
 #define RMII_TXD1_GPIO_Port GPIOB
 #define LD3_Pin GPIO_PIN_14
@@ -83,10 +95,18 @@ void Error_Handler(void);
 #define STLK_RX_GPIO_Port GPIOD
 #define STLK_TX_Pin GPIO_PIN_9
 #define STLK_TX_GPIO_Port GPIOD
+#define MOTOR2_ENC_A_Pin GPIO_PIN_12
+#define MOTOR2_ENC_A_GPIO_Port GPIOD
+#define MOTOR2_ENC_B_Pin GPIO_PIN_13
+#define MOTOR2_ENC_B_GPIO_Port GPIOD
 #define USB_PowerSwitchOn_Pin GPIO_PIN_6
 #define USB_PowerSwitchOn_GPIO_Port GPIOG
 #define USB_OverCurrent_Pin GPIO_PIN_7
 #define USB_OverCurrent_GPIO_Port GPIOG
+#define MOTOR1_ENC_A_Pin GPIO_PIN_6
+#define MOTOR1_ENC_A_GPIO_Port GPIOC
+#define MOTOR1_ENC_B_Pin GPIO_PIN_7
+#define MOTOR1_ENC_B_GPIO_Port GPIOC
 #define USB_SOF_Pin GPIO_PIN_8
 #define USB_SOF_GPIO_Port GPIOA
 #define USB_VBUS_Pin GPIO_PIN_9

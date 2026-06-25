@@ -22,6 +22,7 @@
 #include "eth.h"
 #include "i2c.h"
 #include "spi.h"
+#include "tim.h"
 #include "usart.h"
 #include "usb_otg.h"
 #include "gpio.h"
@@ -61,6 +62,7 @@ float gyrX = 0.0f;
 float gyrY = 0.0f;
 float gyrZ = 0.0f;
 float angle = 0.0f;
+float output = 0.0f;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -107,38 +109,36 @@ int main(void)
 	MX_ETH_Init();
 	MX_I2C1_Init();
 	MX_USART3_UART_Init();
-//	if (HAL_I2C_GetState(&hi2c1) == HAL_I2C_STATE_READY) {
-//	    printf("I2C ready\n");
-//	} else {
-//	    printf("I2C NOT ready\n");
-//	}
 	MX_USB_OTG_FS_PCD_Init();
 	MX_SPI1_Init();
+	MX_TIM1_Init();
+	MX_TIM3_Init();
+	MX_TIM4_Init();
 	/* USER CODE BEGIN 2 */
 	uint8_t reslt = appInit();
-//	if (!reslt) {
-//		printf("init was successful");
-//	} else {
-//		printf("init wasn't successful");
-//	}
-//	i2cScaner();
+	//	if (!reslt) {
+	//		printf("init was successful");
+	//	} else {
+	//		printf("init wasn't successful");
+	//	}
+	//	i2cScaner();
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 	while (1)
 	{
-		appRun(&accX, &accY, &accZ, &gyrX, &gyrY, &gyrZ, &angle);
+		appRun(&accX, &accY, &accZ, &gyrX, &gyrY, &gyrZ, &angle, &output);
 		if (reslt) {
 			HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_0);
 		} else {
 			HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_3);
 		}
-//		printf("Acc x - %f, y - %f, z - %f\n", accX, accY, accZ);
-//		printf("Gyr x - %f, y - %f, z - %f\n", gyrX, gyrY, gyrZ);
-//		printf("Angle on X - %f\n", angle);
-		printf("%f,%f\n", angle, gyrX);
-//		HAL_Delay(1000);
+		//		printf("Acc x - %f, y - %f, z - %f\n", accX, accY, accZ);
+		//		printf("Gyr x - %f, y - %f, z - %f\n", gyrX, gyrY, gyrZ);
+		//		printf("Angle on X - %f\n", angle);
+		printf("%f,%f\n", output, angle);
+		//		HAL_Delay(1000);
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
@@ -162,7 +162,7 @@ void SystemClock_Config(void)
 	/** Configure the main internal regulator output voltage
 	 */
 	__HAL_RCC_PWR_CLK_ENABLE();
-	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
+	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
 	/** Initializes the RCC Oscillators according to the specified parameters
 	 * in the RCC_OscInitTypeDef structure.
@@ -172,10 +172,17 @@ void SystemClock_Config(void)
 	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
 	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
 	RCC_OscInitStruct.PLL.PLLM = 4;
-	RCC_OscInitStruct.PLL.PLLN = 72;
+	RCC_OscInitStruct.PLL.PLLN = 216;
 	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-	RCC_OscInitStruct.PLL.PLLQ = 3;
+	RCC_OscInitStruct.PLL.PLLQ = 9;
 	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+	{
+		Error_Handler();
+	}
+
+	/** Activate the Over-Drive mode
+	 */
+	if (HAL_PWREx_EnableOverDrive() != HAL_OK)
 	{
 		Error_Handler();
 	}
@@ -186,10 +193,10 @@ void SystemClock_Config(void)
 			|RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
 	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
 	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
-	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
-	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_7) != HAL_OK)
 	{
 		Error_Handler();
 	}
@@ -197,14 +204,14 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 void i2cScaner() {
-    uint8_t chip_id = 0;
-    for (uint8_t i = 1; i < 128; ++i) {
-        if (HAL_I2C_Mem_Read(&hi2c1, (i << 1), 0x00, I2C_MEMADD_SIZE_8BIT, &chip_id, 1, 1000) == HAL_OK) {
-            printf("address found: 0x%02X, chip_id: 0x%02X\n", i, chip_id);
-        } else {
-        	printf("skip\n");
-        }
-    }
+	uint8_t chip_id = 0;
+	for (uint8_t i = 1; i < 128; ++i) {
+		if (HAL_I2C_Mem_Read(&hi2c1, (i << 1), 0x00, I2C_MEMADD_SIZE_8BIT, &chip_id, 1, 1000) == HAL_OK) {
+			printf("address found: 0x%02X, chip_id: 0x%02X\n", i, chip_id);
+		} else {
+			printf("skip\n");
+		}
+	}
 }
 
 int __io_putchar(int ch) {
